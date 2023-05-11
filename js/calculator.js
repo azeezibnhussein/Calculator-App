@@ -89,6 +89,33 @@ function factorial(number) {
     }
 }
 
+function operate(operator, number1, number2 = false) {
+    if (operator == "!") {
+        return factorial(number1);
+    }
+    else if (operator == "+") {
+        return add(number1, number2);
+    }
+    else if (operator == "-") {
+        return subtract(number1, number2);
+    }
+    else if (operator == "*") {
+        return multiply(number1, number2);
+    }
+    else if (operator == "/") {
+        return divide(number1, number2);
+    }
+    else if (operator == "^") {
+        return power(number1, number2);
+    }
+    else if (operator == "root") {
+        return root(number1, number2);
+    }
+}
+
+
+
+
 console.log(add(1, 2));
 console.log(subtract(1, 2));
 console.log(multiply(1, 2));
