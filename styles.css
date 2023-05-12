@@ -1,6 +1,6 @@
 .calculator{
     width: 340px;
-    height: 255px;
+    height: 330px;
     justify-content: center;
     flex-wrap: wrap;
     background-color: rgb(27, 45, 45);
@@ -21,6 +21,19 @@
     float: center;
     margin: 20px;
 }
+.deleters {
+    float: right;
+    margin-right: 20px;
+}
+.deleters >button {
+    background-color:red;
+    width: 50px;
+    height: 30px;
+    border-color: black;
+    border-radius: 7px;
+    border: 8px;
+}
+
 .operators{
     width:40px;
     height: 180px;
@@ -37,6 +50,7 @@
     border-color: white;
     padding: 5px;
 }
+
 .numbers {
     width: 250px;
     height:180px;
@@ -55,4 +69,12 @@
     border: 10px;
     border-color: white;
     border-spacing: 5px;
+}
+button {
+    cursor: pointer;
+    box-shadow: 0 5px grey;
+}
+button:active {
+    box-shadow: 0 1px darkslategray;
+    transform: translateY(3px);
 }
