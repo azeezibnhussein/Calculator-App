@@ -1,6 +1,6 @@
 .calculator{
-    width: 340px;
-    height: 330px;
+    width: 420px;
+    height: 370px;
     justify-content: center;
     flex-wrap: wrap;
     background-color: rgb(27, 45, 45);
@@ -9,9 +9,9 @@
     border: 5px;
 }
 .display{
-    width: 290px;
+    width: 85%;
     height: 30px;
-    background-color: grey;
+    background-color: rgb(200, 200, 200);
     text-align-last: right;
     font-size: 30px;
     padding: 5px;
@@ -20,6 +20,7 @@
     border-color: black;
     float: center;
     margin: 20px;
+    overflow: auto;
 }
 .deleters {
     float: right;
@@ -35,7 +36,7 @@
 }
 
 .operators{
-    width:40px;
+    width: 120px;
     height: 180px;
     float: right;
     margin: 10px;
