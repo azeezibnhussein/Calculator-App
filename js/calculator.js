@@ -286,7 +286,7 @@ function calculate_terms(terms) {
         result += termResult;
     }
     
-    return result;
+    return result.toFixed(5);
 }
 
 function clear_display(start = 0, stop = -1) {
