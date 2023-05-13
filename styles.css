@@ -1,33 +1,42 @@
+body {
+    padding: 0;
+    margin: 0;
+    background: linear-gradient(to right, #FFF, #808080);
+    overflow-x: hidden;
+}
+
 .calculator{
-    width: 420px;
-    height: 370px;
+    max-width: 420px;
+    height: 320px;
     justify-content: center;
     flex-wrap: wrap;
-    background-color: rgb(27, 45, 45);
-    border-color: black;
+    background-color: #808080;
     border-radius: 20px;
-    border: 5px;
+    margin: auto;
+    margin-top: 2em;
+    border: 1px solid #000;
+    box-shadow: 0 3px #000;
 }
 .display{
     width: 85%;
     height: 30px;
-    background-color: rgb(200, 200, 200);
+    background-color:rgba(red, green, blue, alpha);
+    color: #000;
     text-align-last: right;
     font-size: 30px;
     padding: 5px;
     border-radius: 3px;
     border: 5px;
-    border-color: black;
     float: center;
     margin: 20px;
     overflow: auto;
 }
 .deleters {
     float: right;
-    margin-right: 20px;
+    margin-right: 32px;
 }
 .deleters >button {
-    background-color:red;
+    background-color:darkgray;
     width: 50px;
     height: 30px;
     border-color: black;
@@ -57,16 +66,16 @@
     height:180px;
     justify-content: center;
     float: left;
-    margin: 10px;
+    margin: 0px 10px;
 }
 .numbers >button {
-    background-color : orange;
-    color: black;
+    background-color : #000;
+    color: #FFF;
     width: 75px;
     height: 40px;
     margin: 2px;
     padding: 0px;
-    border-radius: 25px;
+    border-radius:10px;
     border: 10px;
     border-color: white;
     border-spacing: 5px;
