@@ -282,7 +282,7 @@ function calculate_terms(terms) {
         result += termResult;
     }
     
-    return result;
+    return parseFloat(result.toFixed(5));
 }
 
 function clear_display(start = 0, stop = -1) {
