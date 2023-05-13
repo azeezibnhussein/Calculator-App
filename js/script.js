@@ -297,7 +297,7 @@ function clear_display(start = 0, stop = -1) {
     else {displayElement.value = textContent.slice(0, start) + textContent.slice(stop, textContent.length);}
     
     if (displayElement.value == "") {displayElement.value = "0";}
-    if (!displayElement.includes(.)) {dotPressed = false;}
+    if (!displayElement.value.includes(".")) {dotPressed = false;}
 }
 
 document.querySelector(".display").addEventListener("keypress", (event) => {
@@ -310,7 +310,10 @@ document.querySelector(".display").addEventListener("keypress", (event) => {
 document.querySelector(".numbers").addEventListener("click", (event) => {
     const checkNodeName = event.target.nodeName == "BUTTON";
     if (checkNodeName) {
-        if (event.target.textContent == "." && dotPressed == false) {
+        if (event.target.textContent != ".") {
+            display(event.target.textContent);
+        }
+        else if (dotPressed == false) {
             display(event.target.textContent);
             dotPressed = true;
         }
