@@ -82,9 +82,9 @@ body {
 }
 button {
     cursor: pointer;
-    box-shadow: 0 5px grey;
+    box-shadow: 0 5px darkgray;
 }
 button:active {
-    box-shadow: 0 1px darkslategray;
+    box-shadow: 0 1px black;
     transform: translateY(3px);
 }
