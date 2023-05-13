@@ -1,6 +1,10 @@
 const e = 2.71828;
 const TOL = 10 ** (-14);
 
+let dotPressed = false;
+let operatorPressed = false;
+const supportedOperators = ["+", "-", "*", "/", "^", "!", "sqrt"];
+
 function add(number1, number2) {
     if (typeof number1 != "number" || typeof number2 != "number") {
         return "a parameter given is not a number";
@@ -101,7 +105,7 @@ function operate(operator, number1, number2 = false) {
 
 function check_valid_input(input) {
     input = input.replaceAll(" ", "");
-    const supportedOperators = ["+", "-", "*", "/", "^", "!", "sqrt"]
+    
     let lastElement = "";
     let numbersFirst = false;
     
@@ -226,7 +230,8 @@ function calculate_terms(terms) {
         const operators = terms[i].split(" ")[0].split(",");
         const numbers = terms[i].split(" ")[1].split(",");
         
-        if (numbers.length == 2 && operators.length == 1) {
+        if (numbers.length == 1 && operators.length == 0) {return numbers[0];}
+        else if (numbers.length == 2 && operators.length == 1) {
             tempResult = operate(operators[0], parseFloat(numbers[0]), parseFloat(numbers[1]));
             if (typeof tempResult == "string") {return tempResult;}
             termResult += tempResult;
@@ -292,6 +297,7 @@ function clear_display(start = 0, stop = -1) {
     else {displayElement.value = textContent.slice(0, start) + textContent.slice(stop, textContent.length);}
     
     if (displayElement.value == "") {displayElement.value = "0";}
+    if (!displayElement.includes(.)) {dotPressed = false;}
 }
 
 document.querySelector(".display").addEventListener("keypress", (event) => {
@@ -304,11 +310,13 @@ document.querySelector(".display").addEventListener("keypress", (event) => {
 document.querySelector(".numbers").addEventListener("click", (event) => {
     const checkNodeName = event.target.nodeName == "BUTTON";
     if (checkNodeName) {
-        display(event.target.textContent);
+        if (event.target.textContent == "." && dotPressed == false) {
+            display(event.target.textContent);
+            dotPressed = true;
+        }
     }
 })
 
-let operatorPressed = false;
 document.querySelector(".operators").addEventListener("click", (event) => {
     const checkNodeName = event.target.nodeName == "BUTTON";
     if (checkNodeName) {
@@ -319,6 +327,7 @@ document.querySelector(".operators").addEventListener("click", (event) => {
             if (typeof displayText != "string") {displayText = calculate_terms(displayText);}
             clear_display();
             operatorPressed = false;
+            dotPressed = false;
         }
         else {
             displayText = event.target.textContent;
