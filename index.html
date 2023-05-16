@@ -1,44 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <script src = "./js/script.js", defer></script>
-    
-	<title>Document</title>
-</head>
-<body>
-	<div class="calculator">
-		<input class="display" value = "0">
-		<div class="deleters">
-			<button class="clear">C</button>
-			<button class="backspace">←</button>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="styles.css">
+		<script src="./js/script.js" , defer></script>
+
+		<title>Calculator</title>
+	</head>
+
+	<body>
+		<div id="calc">
+			<dive class="output">
+				<div data-previous-display class="previous-display"> 0 </div>
+				<div data-current-display class="current-display"> 0 </div>
+			</dive>
+			<div class="row">
+				<button data-all-clear class="btn bg-gray-1 btn-ac" type="button"> AC </button>
+				<button data-delete class="btn bg-gray-1 btn-delete" type="button"> ⌫ </button>
+				<button data-operator class="btn bg-gray-1 btn-percent" type="button"> % </button>
+				<button data-operator class="btn bg-orange btn-divide" type="button"> ÷ </button>
+			</div>
+			<div class="row">
+				<button data-number class="btn bg-gray-2 btn-7" type="button"> 7 </button>
+				<button data-number class="btn bg-gray-2 btn-8" type="button"> 8 </button>
+				<button data-number class="btn bg-gray-2 btn-9" type="button"> 9 </button>
+				<button data-operator class="btn bg-orange btn-times" type="button"> x </button>
+			</div>
+			<div class="row">
+				<button data-number class="btn bg-gray-2 btn-4" type="button"> 4 </button>
+				<button data-number class="btn bg-gray-2 btn-5" type="button"> 5 </button>
+				<button data-number class="btn bg-gray-2 btn-6" type="button"> 6 </button>
+				<button data-operator class="btn bg-orange btn-minus" type="button"> - </button>
+			</div>
+			<div class="row">
+				<button data-number class="btn bg-gray-2 btn-1" type="button"> 1 </button>
+				<button data-number class="btn bg-gray-2 btn-2" type="button"> 2 </button>
+				<button data-number class="btn bg-gray-2 btn-3" type="button"> 3 </button>
+				<button data-operator class="btn bg-orange btn-plus" type="button"> + </button>
+			</div>
+			<div class="row">
+				<button data-number class="btn bg-gray-2 btn-0" type="button"> 0 </button>
+				<button data-number class="btn bg-gray-2 btn-comma" type="button"> . </button>
+				<button data-equals class="btn bg-orange btn-res" type="button"> = </button>
+			</div>
 		</div>
-		<div class="numbers">
-			<button>7</button>
-			<button>8</button>
-			<button>9</button>	
-			<button>4</button>
-			<button>5</button>
-			<button>6</button>	
-			<button>1</button>
-			<button>2</button>
-			<button>3</button>
-			<button>0</button>
-            <button>.</button>
-		</div>
-		<div class="operators">
-            <button>+</button>
-            <button>-</button>
-            <button>/</button>
-            <button>*</button>
-            <button>^</button>
-            <button>sqrt</button>
-            <button>!</button>
-            <button id = "confirm">=</button>
-		</div>
-	</div>
-</body>
+	</body>
+
 </html>

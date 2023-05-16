@@ -1,351 +1,278 @@
 const e = 2.71828;
 const TOL = 10 ** (-14);
 
-let dotPressed = false;
-let operatorPressed = false;
-const supportedOperators = ["+", "-", "*", "/", "^", "!", "sqrt"];
+/**
+ * Calculator class represents a calculator object that performs arithmetic operations.
+ * @class
+ * @param {HTMLElement} previousDisplayText - The element for displaying the previous calculation result.
+ * @param {HTMLElement} currentDisplayText - The element for displaying the current calculation input.
+ */
+class Calculator {
+    /**
+     * Creates a new Calculator instance.
+     * Initializes the previousDisplayText and currentDisplayText properties.
+     * @constructor
+     * @param {HTMLElement} previousDisplayText - The element for displaying the previous calculation result.
+     * @param {HTMLElement} currentDisplayText - The element for displaying the current calculation input.
+     */
+    constructor(previousDisplayText, currentDisplayText) {
+        this.previousDisplayText = previousDisplayText;
+        this.currentDisplayText = currentDisplayText;
+        this.clearAll();
+    }
 
-function add(number1, number2) {
-    if (typeof number1 != "number" || typeof number2 != "number") {
-        return "a parameter given is not a number";
+    /* Clear different variables */
+    clearAll() {
+        this.currentOperand = '';
+        this.previousOperand = '';
+        this.operation = undefined;
+        this.lastOperation = undefined;
     }
-    else {
-        return number1 + number2;
-    }
-}
 
-function subtract(number1, number2) {
-    if (typeof number1 != "number" || typeof number2 != "number") {
-        return "a parameter given is not a number";
+    /* Delete single number to the left */
+    delete() {
+        this.currentOperand = this.currentOperand.toString().slice(0, -1);
     }
-    else {
-        return number1 - number2;
-    }
-}
 
-function multiply(number1, number2) {
-    if (typeof number1 != "number" || typeof number2 != "number") {
-        return "A parameter given is not a number";
-    }
-    else {
-        return number1 * number2;
-    }
-}
+    /* Add number to the screen every time user clicks number */
+    appendNumber(number) {
+        if (number === '.' && this.currentOperand.toString().includes('.')) return;
 
-function divide(number1, number2) {
-    if (typeof number1 != "number" || typeof number2 != "number") {
-        return "A parameter given is not a number";
+        this.currentOperand = this.currentOperand.toString() + number.toString();
     }
-    else if (number2 < TOL) {
-        return "You can't divide by zero =( It is not a defined mathmatical value";
-    }
-    else {
-        return number1 / number2;
-    }
-}
 
-function power(number1, number2) {
-    if (typeof number1 != "number" || typeof number2 != "number") {
-        return "A parameter given is not a number";
-    }
-    else {
-        return number1 ** number2;
-    }
-}
+    /**
+     * Sets the operation for the calculator.
+     * 
+     * @param {string} operation - The operation to be set.
+     */
+    chooseOperation(operation) {
+        if (this.currentOperand === '') {
+            if (operation !== '%') this.operation = operation;
+            return
+        };
 
-function sqrt(number) {
-    if (typeof number != "number") {
-        return "Parameter given is not a number";
-    }
-    else {
-        return number ** (0.5);
-    }
-}
-
-function factorial(number) {
-    if (typeof number != "number") {
-        return "Parameter given is not a number";
-    }
-    else if (number < 0) {
-        return "factorial is not defined for negative numbers";
-    }
-    else {
-        let answer;
-        if (number >= 1 || answer < TOL) {answer = 1;}
-        else {answer = 0;}
-        
-        while (number >= 1) {
-            answer *= number
-            number--
-        }
-        
-        if (number > TOL) {
-            const dt = 0.001;
-            for (let t = 0; t < 100; t += dt) {
-                answer += (t ** number) * (e ** (- t)) * dt;
+        if (this.previousOperand !== '') {
+            if (operation === '%') {
+                this.lastOperation = this.operation;
+                this.operation = operation;
             }
+
+            this.compute();
         }
-        
-        return answer
+
+        this.operation = operation;
+        this.previousOperand = this.currentOperand;
+        this.currentOperand = '';
+    }
+
+    /**
+     * Performs the computation based on the previous operand, current operand, and operation.
+     * The result is stored in the current operand.
+     * @returns {void}
+     */
+    compute() {
+        let computation;
+        const prev = parseFloat(this.previousOperand);
+        const current = parseFloat(this.currentOperand);
+
+        // Check if the operands are valid numbers
+        if (isNaN(prev) || isNaN(current)) return;
+
+        // Perform the computation based on the selected operation
+        switch (this.operation) {
+            case '+':
+                computation = prev + current;
+                break;
+
+            case '-':
+                computation = prev - current;
+                break;
+
+            case 'x':
+                computation = prev * current;
+                break;
+
+            case '÷':
+                computation = prev / current;
+                break;
+
+            case '%':
+                // Perform percentage computation based on the last operation
+                switch (this.lastOperation) {
+                    case '+':
+                        computation = prev + ((prev * current) / 100);
+                        break;
+
+                    case '-':
+                        computation = prev - ((prev * current) / 100);
+                        break;
+
+                    case 'x':
+                        computation = prev * ((prev * current) / 100);
+                        break;
+
+                    case '÷':
+                        computation = prev / ((prev * current) / 100);
+                        break;
+                    default:
+                        return;
+                }
+
+                break;
+
+            default:
+                return;
+        }
+
+        // Update the current operand with the computed value
+        this.currentOperand = computation;
+
+        // Reset the operation and last operation variables
+        this.operation = undefined;
+        this.lastOperation = undefined;
+
+        // Clear the previous operand
+        this.previousOperand = '';
+    }
+
+    /**
+     * Formats a number for display with a maximum of 4 decimal places.
+     *
+     * @param {number} number - The number to be formatted.
+     * @returns {string} The formatted number.
+     */
+    getFormattedNumber(number) {
+        const stringNumber = number.toString();
+
+        // Extract the integer and decimal digits
+        const integerDigits = parseFloat(stringNumber.split('.')[0]);
+        const decimalDigit = stringNumber.split('.')[1];
+        let integerDisplay;
+
+        // Check if the integer part is NaN (not a number)
+        if (isNaN(integerDigits)) {
+            integerDisplay = '';
+        } else {
+            // Format the integer part with commas
+            integerDisplay = integerDigits.toLocaleString('en', {
+                maximumFractionDigits: 4
+            })
+        }
+
+        // Check if there are decimal digits
+        if (decimalDigit != null) {
+            // Return the formatted number with maximum 6 decimal places
+            return `${integerDisplay}.${decimalDigit.substring(0, 6)}`;
+        } else {
+            // Return the formatted integer part only
+            return integerDisplay;
+        }
+    }
+
+    /**
+     * Updates the display of the calculator with the current and previous operands and operation.
+     */
+    updateDisplay() {
+        // Update the current operand display with formatted number
+        this.currentDisplayText.innerText = this.getFormattedNumber(this.currentOperand);
+
+        // Check if there is an operation in progress
+        if (this.operation != null || this.operation != undefined) {
+
+            // Check if previous operand is empty and set it to 0 if true
+            if (this.previousOperand === '') this.previousOperand = 0;
+
+            // Update the previous operand display with formatted numbers and operation
+            this.previousDisplayText.innerText =
+                `${this.getFormattedNumber(this.previousOperand)} ${this.operation} ${this.getFormattedNumber(this.currentOperand)}`;
+        } else {
+            this.previousDisplayText.innerText = '';
+        }
+
+        // Check if both current and previous operands are empty, set them to 0 and update the display
+        if (this.currentOperand == '' && this.previousOperand == '') {
+            this.previousDisplayText.innerText = 0;
+            this.currentDisplayText.innerText = 0;
+        }
     }
 }
 
-function operate(operator, number1, number2 = false) {
-    if (number2 === false && operator == "!") {return factorial(number1);}
-    else if (number2 !== false && operator == "+") {return add(number1, number2);}
-    else if (number2 !== false && operator == "-") {return subtract(number1, number2);}
-    else if (number2 !== false && operator == "*") {return multiply(number1, number2);}
-    else if (number2 !== false && operator == "/") {return divide(number1, number2);}
-    else if (number2 !== false && operator == "^") {return power(number1, number2);}
-    else if (number2 === false && operator == "sqrt") {return sqrt(number1, number2);}
-    else {
-        return "operator use was not valid!";
-    }
-}
+const numberButtons = document.querySelectorAll('[data-number]');
+const operationButtons = document.querySelectorAll('[data-operator]');
+const clearAllButton = document.querySelector('[data-all-clear]');
+const deleteButton = document.querySelector('[data-delete]');
+const equalsButton = document.querySelector('[data-equals]');
+const previousDisplayText = document.querySelector('[data-previous-display]');
+const currentDisplayText = document.querySelector('[data-current-display]');
 
-function check_valid_input(input) {
-    input = input.replaceAll(" ", "");
-    
-    let lastElement = "";
-    let numbersFirst = false;
-    
-    for (let i = 0; i < input.length; i) {
-        if (!isNaN(parseFloat(input.slice(i, input.length))) && lastElement != "number") {
-            if (input[i] == "+" && lastElement != "!") {
-                input = input.replace("+", "");
-            }
-            else if (["+", "-"].includes(input[i]) && lastElement == "!") {
-                i += 1;
-            }
-            i += parseFloat(input.slice(i, input.length)).toString().length;
-            
-            numbersFirst = true;
-            lastElement = "number";
-        }
-        else if (!numbersFirst && lastElement != "operator") {
-            if (input.slice(i, i + 4) == "sqrt") {i += 4;}
-            else {return false;}
-            
-            lastElement = "operator"
-        }
-        else if (supportedOperators.includes(input[i]) && lastElement != "operator") {
-            if (input[i] != "!") {lastElement = "operator";}
-            else if (lastElement == "!") {return false;}
-            else {lastElement = "!";}
-            
-            
-            i += 1;
-        }
-        else if (input.slice(i, i + 4) == "sqrt" && lastElement == "operator") {i += 4;}
-        else {return false;}
-    }
-    
-    if (lastElement == "operator") {return false;}
-    else {return input;}
-}
+const calculator = new Calculator(previousDisplayText, currentDisplayText);
 
-function display(toDisplay) {
-    const unwantedStartElements = ["0", "+", "-", "*", "/", "^", "!"]
-    displayElement = document.querySelector(".display");
-    
-    if (!isNaN(toDisplay) && unwantedStartElements.toString().includes(displayElement.value)) {
-        displayElement.value = "";
-    }
-    else if (toDisplay == "sqrt" && unwantedStartElements.toString().includes(displayElement.value)) {
-        displayElement.value = "";
-    }
-    else if (isNaN(toDisplay) && toDisplay.length > 5) {
-        displayElement.value = "";
-    }
-    displayElement.value += toDisplay;
-}
+// Handle keyboard down and trigger the corresponding button
+document.addEventListener('keydown', (e) => {
+    switch (e.key) {
+        case 'Escape':
+            clearAllButton.click();
+            break;
 
-function get_display_content() {
-    displayElement = document.querySelector(".display");
-    let displayTextContent = check_valid_input(displayElement.value);
-    if (displayTextContent == false) {return "Invalid Input!";}
-    
-    const calculationTerms = [];
-    const numbers = [];
-    const operators = [];
-    let lengthOfElement = 0;
-    let lengthNeeded = 3;
-    
-    for (let i = 0; displayTextContent.length > 0; i++) {
-        if (displayTextContent[0] == "!") {
-            if (operators.length == 0) {lengthNeeded = 2;}
-            operators.push("!");
-            displayTextContent = displayTextContent.replace("!", "");
-        }
-        else if (lengthOfElement >= lengthNeeded) {
-            calculationTerms.push(operators.toString() + " " + numbers.toString())
-            
-            numbers.splice(0, numbers.length);
-            operators.splice(0, operators.length);
-            lengthOfElement = -1;
-            lengthNeeded = 2;
-            
-            if (displayTextContent == " ") {displayTextContent = "";}
-        }
-        else if (["-", "+"].includes(displayTextContent[0]) && 
-                 (calculationTerms.length > 0 || numbers.length > 0) && 
-                 operators.length == 0) {
-            operators.push(displayTextContent[0]);
-            displayTextContent = displayTextContent.replace(displayTextContent[0], "")
-        }
-        else if (!isNaN(parseFloat(displayTextContent))) {
-            numbers.push(parseFloat(displayTextContent));
-            displayTextContent = displayTextContent.replace(parseFloat(displayTextContent).toString(), "");
-        }
-        else if (displayTextContent.slice(0, 4) == "sqrt") {
-            if (operators.length == 0) {lengthNeeded = 2;}
-            else if (numbers.length > 0) {lengthNeeded = 4;}
-            else {lengthNeeded = 3;}
-            operators.push("sqrt");
-            displayTextContent = displayTextContent.replace("sqrt", "");
-        }
-        else {
-            operators.push(displayTextContent[0]);
-            displayTextContent = displayTextContent.replace(operators, "")
-        }
-        
-        lengthOfElement += 1;
-        if (i > 100) {break;}
-        if (displayTextContent.length == 0 && numbers.length + operators.length > 0)
-            displayTextContent = " "
+        case 'Backspace':
+            deleteButton.click();
+            break;
+
+        case 'Enter':
+            equalsButton.click();
+            break;
+
+        default:
+            operationButtons.forEach(button => {
+                if ((button.innerText === '÷' && e.key === '/') ||
+                    (button.innerText === 'x' && e.key === '*')) {
+                    button.click();
+                } else if (button.innerText === e.key) {
+                    button.click();
+                }
+            });
+
+            numberButtons.forEach(button => {
+                if ((button.innerText === '.' && e.key === ',') || button.innerText === e.key) {
+                    button.click();
+                }
+            });
+            break;
     }
-    
-    return calculationTerms;
-}
 
-function calculate_terms(terms) {
-    let result = 0;
-    
-    let termResult;
-    let tempResult;
-    for (let i = 0; i < terms.length; i++) {
-        if (!Number.isSafeInteger(result)) {result = BigInt(result);}
-        
-        termResult = 0;
-        const operators = terms[i].split(" ")[0].split(",");
-        const numbers = terms[i].split(" ")[1].split(",");
-        
-        if (numbers.length == 1 && operators.length == 0) {return numbers[0];}
-        else if (numbers.length == 2 && operators.length == 1) {
-            tempResult = operate(operators[0], parseFloat(numbers[0]), parseFloat(numbers[1]));
-            if (typeof tempResult == "string") {return tempResult;}
-            termResult += tempResult;
-        }
-        else if (numbers.length == 1 && operators.length == 1) {
-            if (["!", "sqrt"].includes(operators[0])) {
-                tempResult = operate(operators[0], parseFloat(numbers[0]));
-                if (typeof tempResult == "string") {return tempResult;}
-                termResult += tempResult;
-            }
-            else {
-                tempResult = operate(operators[0], result, parseFloat(numbers[0]));
-                if (typeof tempResult == "string") {return tempResult;}
-                termResult += tempResult
-                result = 0;
-            }
-        }
-        else if (numbers.length == 1 && numbers.length < operators.length) {
-            tempResult = parseFloat(numbers[0]);
-            if (operators.includes("sqrt")) {
-                tempResult = operate("sqrt", tempResult, false);
-                if (typeof tempResult == "string") {return tempResult;}
-            }
-            if (operators.includes("!")) {
-                tempResult = operate("!", tempResult, false);
-                if (typeof tempResult == "string") {return tempResult;}
-            }
-            if (operators.length == 3) {
-                tempResult += operate(operators[0], result, tempResult);
-                if (typeof tempResult == "string") {return tempResult;}
-                termResult = tempResult;
-                result = 0;
-            }
-            else {termResult += tempResult}
-        }
-        else if (numbers.length == 2 && numbers.length <= operators.length) {
-            tempResult = parseFloat(numbers[1]);
-            if (operators.includes("sqrt")) {
-                tempResult = operate("sqrt", tempResult, false);
-                if (typeof tempResult == "string") {return tempResult;}
-            }
-            if (operators.includes("!")) {
-                tempResult = operate("!", tempResult, false);
-                if (typeof tempResult == "string") {return tempResult;}
-            }
-            
-            tempResult += operate(operators[0], parseFloat(numbers[0]), tempResult);
-            if (typeof tempResult == "string") {return tempResult;}
-            termResult = tempResult
-        }
-        else {return "Failed";}
-        
-        result += termResult;
-    }
-    
-    return parseFloat(result.toFixed(5));
-}
-
-function clear_display(start = 0, stop = -1) {
-    displayElement = document.querySelector(".display");
-    textContent = displayElement.value;
-    if (stop == -1) {displayElement.value = textContent.slice(0, start);}
-    else {displayElement.value = textContent.slice(0, start) + textContent.slice(stop, textContent.length);}
-    
-    if (displayElement.value == "") {displayElement.value = "0";}
-    if (!displayElement.value.includes(".")) {dotPressed = false;}
-}
-
-document.querySelector(".display").addEventListener("keypress", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    document.querySelector("#confirm").click();
-  }
 });
 
-document.querySelector(".numbers").addEventListener("click", (event) => {
-    const checkNodeName = event.target.nodeName == "BUTTON";
-    if (checkNodeName) {
-        if (event.target.textContent != ".") {
-            display(event.target.textContent);
-        }
-        else if (dotPressed == false) {
-            display(event.target.textContent);
-            dotPressed = true;
-        }
-    }
-})
+// Add event listeners to number buttons
+numberButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        calculator.appendNumber(button.innerText); // Append the number to the calculator's input
+        calculator.updateDisplay(); // Update the display
+    })
+});
 
-document.querySelector(".operators").addEventListener("click", (event) => {
-    const checkNodeName = event.target.nodeName == "BUTTON";
-    if (checkNodeName) {
-        let displayText = "";
-        
-        if (event.target.textContent == "=") {
-            displayText = get_display_content();
-            if (typeof displayText != "string") {displayText = calculate_terms(displayText);}
-            clear_display();
-            operatorPressed = false;
-            dotPressed = false;
-        }
-        else {
-            displayText = event.target.textContent;
-            operatorPressed = event.target.textContent;
-        }
-        display(displayText);
-    }
-})
+// Add event listeners to operation buttons
+operationButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        calculator.chooseOperation(button.innerText); // Choose the operation for the calculator
+        calculator.updateDisplay();
+    })
+});
 
-document.querySelector(".deleters").addEventListener("click", (event) => {
-    start = 0;
-    stop = document.querySelector(".display").value.length;
-    if (event.target.textContent == "←") {
-        start = document.querySelector(".display").value.length - 1;
-    }
-    
-    clear_display(start, stop);
-})
+// Add event listener to equals button
+equalsButton.addEventListener('click', () => {
+    calculator.compute();
+    calculator.updateDisplay();
+});
+
+// Add event listener to clear all button
+clearAllButton.addEventListener('click', () => {
+    calculator.clearAll();
+    calculator.updateDisplay();
+});
+
+// Add event listener to delete button
+deleteButton.addEventListener('click', () => {
+    calculator.delete();
+    calculator.updateDisplay();
+});
